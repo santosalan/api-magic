@@ -1,0 +1,22 @@
+{
+    "name": "santosalan/api-magicservice",
+    "description": "API Automatic Service",
+    "keywords": ["php", "api", "magic", "service", "automagic", "automatic", "utilities", "guzzle", "santosalan"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alan Santos",
+            "email": "alanssantos@outlook.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.0",
+        "guzzlehttp/guzzle": ">=6.3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "SantosAlan\\ApiMagicService\\": "src/"
+        }
+    }
+}
