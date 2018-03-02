@@ -1,10 +1,10 @@
 <?php
 
-namespace SantosAlan\ApiMagicService;
+namespace SantosAlan\ApiMagic;
 
 use GuzzleHttp\Client as GuzzleClient;
 
-class ApiMagicService
+class ApiMagic implements ApiMagicInterface
 {
 
     /**

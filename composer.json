@@ -1,5 +1,5 @@
 {
-    "name": "santosalan/api-magicservice",
+    "name": "santosalan/api-magic",
     "description": "API Automatic Service",
     "keywords": ["php", "api", "magic", "service", "automagic", "automatic", "utilities", "guzzle", "santosalan"],
     "license": "MIT",
