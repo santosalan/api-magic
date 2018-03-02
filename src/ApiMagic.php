@@ -104,7 +104,7 @@ class ApiMagic implements ApiMagicInterface
         $params = !empty($arguments[2]) ? $arguments[2] : [];
 
         if (!empty($this->tokenField)) {
-            $params = array_merge($params, [$this->tokenField => $this->generateToken()]);
+            $params = array_merge($params, [$this->tokenField => $this->token()]);
         }
 
         $data = $client->request(
@@ -124,7 +124,7 @@ class ApiMagic implements ApiMagicInterface
      * 
      * @return String authToken
      */
-    protected function generateToken()
+    protected function token()
     {
         return '';
     }
