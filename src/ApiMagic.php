@@ -3,6 +3,7 @@
 namespace SantosAlan\ApiMagic;
 
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\RequestOptions;
 
 class ApiMagic implements ApiMagicInterface
 {
@@ -23,6 +24,8 @@ class ApiMagic implements ApiMagicInterface
     protected $namedReturn = true;
 
     protected $tokenField = null;
+
+    private $toJson = false;
     
     private $element = null;
 
@@ -46,6 +49,13 @@ class ApiMagic implements ApiMagicInterface
         } else {
             return $this->element;
         }
+    }
+
+    public function toJson()
+    {
+        $this->toJson = true;
+
+        return $this;
     }
 
     public function element($element)
@@ -117,12 +127,17 @@ class ApiMagic implements ApiMagicInterface
             $params = array_merge($params, [$this->tokenField => $this->token()]);
         }
 
+        $options = [];
+        if ($this->toJson) {
+            $options = [RequestOptions::JSON => $params];
+        } else {
+            $options = ['form_params' => $params];
+        }
+
         $data = $client->request(
             $arguments[0], 
             $requestUrl,
-            [
-                'form_params' => $params,
-            ]
+            $options
         )->getBody();       
 
         return $element ? '{"' . $element . '":' . $data . '}' : $data;
