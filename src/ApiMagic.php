@@ -96,12 +96,22 @@ class ApiMagic implements ApiMagicInterface
      */
     protected function apiRequest($url, $arguments, $element = null)
     {
-        $client = new GuzzleClient(['base_uri' => $this->host . $this->port . $this->prefix . '/']);
-
+        
         $requestUrl = $url 
-                    . (!empty($arguments[1]) ? '/' . implode('/',$arguments[1]) : null);
+                    . (!empty($arguments[1]) 
+                            ? (substr($arguments[1][0], 0, 1) === '?'  
+                                ? '/' . implode('',$arguments[1])
+                                : '/' . implode('/',$arguments[1])) 
+                            : null);
 
         $params = !empty($arguments[2]) ? $arguments[2] : [];
+
+        $headers = !empty($arguments[3]) ? $arguments[3] : [];
+
+        $client = new GuzzleClient([
+            'base_uri' => $this->host . $this->port . $this->prefix . '/', 
+            'headers' => $headers
+        ]);
 
         if (!empty($this->tokenField)) {
             $params = array_merge($params, [$this->tokenField => $this->token()]);
@@ -111,7 +121,7 @@ class ApiMagic implements ApiMagicInterface
             $arguments[0], 
             $requestUrl,
             [
-                'form_params' => $params
+                'form_params' => $params,
             ]
         )->getBody();       
 
