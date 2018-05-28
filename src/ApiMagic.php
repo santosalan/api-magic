@@ -10,7 +10,7 @@ class ApiMagic implements ApiMagicInterface
 
     /**
      * Base URI
-     * 
+     *
      * @var String
      */
     protected $host = null;
@@ -26,7 +26,7 @@ class ApiMagic implements ApiMagicInterface
     protected $tokenField = null;
 
     private $toJson = false;
-    
+
     private $element = null;
 
 
@@ -35,9 +35,9 @@ class ApiMagic implements ApiMagicInterface
         $this->setElement($name);
 
         return $this->proccess($name, $arguments);
-    }    
+    }
 
-    private function setElement($element) 
+    private function setElement($element)
     {
         $this->element = trim($this->element) == null ? $element : $this->element;
     }
@@ -83,7 +83,7 @@ class ApiMagic implements ApiMagicInterface
     {
         if (! trim($this->actionRoutes)) {
             return true;
-        }            
+        }
 
         $json = $this->apiRequest($this->actionRoutes, ['POST']);
 
@@ -94,24 +94,24 @@ class ApiMagic implements ApiMagicInterface
                 return true;
             }
         }
-        
+
         return false;
     }
 
     /**
      * Request Curl
-     * 
+     *
      * @param  Url $url Endereco de requisicao
      * @return Array      Dados retornados da requisicao
      */
     protected function apiRequest($url, $arguments, $element = null)
     {
-        
-        $requestUrl = $url 
-                    . (!empty($arguments[1]) 
-                            ? (substr($arguments[1][0], 0, 1) === '?'  
-                                ? '/' . implode('',$arguments[1])
-                                : '/' . implode('/',$arguments[1])) 
+
+        $requestUrl = $url
+                    . (!empty($arguments[1])
+                            ? (substr($arguments[1][0], 0, 1) === '/'
+                                ? implode('/',$arguments[1])
+                                : '/' . implode('/',$arguments[1]))
                             : null);
 
         $params = !empty($arguments[2]) ? $arguments[2] : [];
@@ -119,7 +119,7 @@ class ApiMagic implements ApiMagicInterface
         $headers = !empty($arguments[3]) ? $arguments[3] : [];
 
         $client = new GuzzleClient([
-            'base_uri' => $this->host . $this->port . $this->prefix . '/', 
+            'base_uri' => $this->host . $this->port . $this->prefix . '/',
             'headers' => $headers
         ]);
 
@@ -131,22 +131,32 @@ class ApiMagic implements ApiMagicInterface
         if ($this->toJson) {
             $options = [RequestOptions::JSON => $params];
         } else {
-            $options = ['form_params' => $params];
+            if($arguments[0] === 'GET') {
+                $values = [];
+                foreach ($params as $key => $value) {
+                   $values[] = $key . '=' . $value;
+                }
+
+                $requestUrl .= '?' . implode('&', $values);
+
+            } else {
+                $options = ['form_params' => $params];
+            }
         }
 
         $data = $client->request(
-            $arguments[0], 
+            $arguments[0],
             $requestUrl,
             $options
-        )->getBody();       
+        )->getBody();
 
-        return $element ? '{"' . $element . '":' . $data . '}' : $data;
+        return $element ? '{"' . $element . '":' . $data . '}' : (string) $data;
 
     }
 
     /**
      * Gerar o token de request
-     * 
+     *
      * @return String authToken
      */
     protected function token()
@@ -154,4 +164,4 @@ class ApiMagic implements ApiMagicInterface
         return '';
     }
 
-}    
+}
