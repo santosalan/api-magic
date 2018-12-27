@@ -69,7 +69,7 @@ class ApiMagic implements ApiMagicInterface
 
     public function auth($username, $password, $type = 'basic')
     {
-        if ('basic' != lowercase($type)) {
+        if ('basic' != strtolower($type)) {
             $this->auth = [$username, $password, $type];
         } else {
             $this->auth = [$username, $password];
