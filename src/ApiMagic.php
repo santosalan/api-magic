@@ -29,6 +29,8 @@ class ApiMagic implements ApiMagicInterface
 
     private $element = null;
 
+    private $auth = null;
+
 
     public function __call ($name, $arguments = null)
     {
@@ -61,6 +63,17 @@ class ApiMagic implements ApiMagicInterface
     public function element($element)
     {
         $this->setElement(trim($element));
+
+        return $this;
+    }
+
+    public function auth($username, $password, $type = 'basic')
+    {
+        if ('basic' != lowercase($type)) {
+            $this->auth = [$username, $password, $type];
+        } else {
+            $this->auth = [$username, $password];
+        }
 
         return $this;
     }
@@ -142,6 +155,10 @@ class ApiMagic implements ApiMagicInterface
             } else {
                 $options = ['form_params' => $params];
             }
+        }
+
+        if ($this->auth) {
+            $options['auth'] = $this->auth;
         }
 
         $data = $client->request(
