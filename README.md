@@ -48,6 +48,12 @@ $response = $api->users(['POST'], null, [
     'email' => 'john@example.com'
 ]);
 
+// Make a request to the /users.php?access=hash1234 - explicit extension endpoint and URL parameters
+$response = $api->{'users.php'}(['POST'], ['?access=hash1234'], [
+    'name' => 'John Doe',
+    'email' => 'john@example.com'
+]);
+
 // Make a GET request to /users/123
 $response = $api->users(['GET'], [123]);
 ```
